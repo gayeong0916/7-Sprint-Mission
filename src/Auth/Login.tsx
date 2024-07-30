@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import "./Auth.css";
 import logo from "../images/logo2X.png";
 import google from "../images/google-logo.png";
@@ -10,7 +10,7 @@ import { postSignIn } from "../api";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { email: initalEmail, password: initalPassword } = location.state || {};
+  const { email: initalEmail="", password: initalPassword="" } = location.state || {};
   const { errors, validateEmail, validatePassword } = useFormValidation();
   const [formValues, setFormValues] = useState({
     email: initalEmail || "",
@@ -42,11 +42,9 @@ const Login = () => {
     const isFormValid = Object.values(errors).every((error) => !error);
     if (isFormValid) {
         try{
-          const result=await postSignIn(formValues);
-          const {accessToken}=result;
+          const {accessToken}=await postSignIn(formValues);
           if(accessToken){
             localStorage.setItem("accessToken", accessToken); 
-          console.log("Access Token:", accessToken); 
           navigate("/"); 
           }
         }catch(error:any){

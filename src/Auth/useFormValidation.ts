@@ -53,7 +53,10 @@ const useValidationForm= () => {
       passwordConfirm: passwordConfirmError,
     }));
   };
-  const handleBlur = (name: string, value: string, password:string) => {
+
+  type FieldName="email" | "nickname" | "password" | "passwordConfirmation";
+
+  const handleBlur = (name: FieldName, value: string, password:string) => {
     switch (name) {
       case "email":
         validateEmail(value);
@@ -64,7 +67,7 @@ const useValidationForm= () => {
       case "password":
         validatePassword(value);
         break;
-      case "passwordConfirm":
+      case "passwordConfirmation":
         validatePasswordConfirm(password, value);
         break;
       default:

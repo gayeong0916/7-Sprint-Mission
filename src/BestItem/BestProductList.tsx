@@ -4,7 +4,7 @@ import "../ProductItem.css";
 import { getReviews } from "../api";
 import { Link } from "react-router-dom";
 
-interface ListProps {
+interface RequestParams {
   currentPage: number;
   pageSize: number;
   orderBy: string;
@@ -43,7 +43,7 @@ function BestProductList() {
     currentPage,
     pageSize,
     orderBy,
-  }: ListProps) => {
+  }: RequestParams) => {
     const data = await getReviews({ currentPage, pageSize, orderBy });
     setProductList(data.list);
   };

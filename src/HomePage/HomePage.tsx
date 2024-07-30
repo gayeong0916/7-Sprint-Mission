@@ -17,7 +17,6 @@ const HomePage = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    console.log(accessToken);
     setIsLoggedIn(!!accessToken);
   }, []);
 

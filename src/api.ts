@@ -3,9 +3,17 @@ interface ReviewsParams {
   pageSize: number;
   orderBy: string;
 }
+interface FormData {
+  name: string;
+  description: string;
+  price: number;
+  tags: string[];
+  images: string[];
+}
 const baseURL = "https://panda-market-api.vercel.app";
 const productURL = `${baseURL}/products`;
 const authURL = `${baseURL}/auth`;
+const token = localStorage.getItem("accessToken");
 
 export async function getReviews({
   currentPage = 1,
@@ -46,7 +54,7 @@ export async function getProductIdComments({
 
 export async function postSignup(formData: any) {
   try {
-    const response = await fetch(`${authURL}/signUp}`, {
+    const response = await fetch(`${authURL}/signUp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +73,7 @@ export async function postSignup(formData: any) {
 
 export async function postSignIn(formData: any) {
   try {
-    const response = await fetch(`${authURL}/signIn}`, {
+    const response = await fetch(`${authURL}/signIn`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,5 +87,25 @@ export async function postSignIn(formData: any) {
     return data;
   } catch (error: any) {
     throw new Error(`로그인에 실패했습니다: ${error.message}`);
+  }
+}
+
+export async function postAddItem(ProductData: FormData) {
+  try {
+    const response = await fetch(productURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(ProductData),
+    });
+    if (!response.ok) {
+      throw new Error("상품 등록에 실패했습니다");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    throw new Error(`상품 등록에 실패했습니다: ${error.message}`);
   }
 }

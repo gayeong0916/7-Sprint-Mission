@@ -6,7 +6,7 @@
 }
 .all-wrapper {
   margin: 0 auto;
-    max-width: 1200px;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
 }
@@ -18,7 +18,7 @@
   color: #1f2937;
 }
 .add-top {
-  margin-top: 94px;
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -50,7 +50,7 @@
   font-weight: 700;
   color: #1f2937;
   display: inline-block;
-  height:auto;
+  height: auto;
 }
 .add-product-input {
   background-color: #f3f4f6;
@@ -144,39 +144,42 @@ button:hover {
   margin-left: 8px;
 }
 @media (min-width: 375px) and (max-width: 767px) {
-  .wrapper{
-    width:375px;
-    padding: 0 10px;
+  .all-wrapper {
+    padding: 0 15px;
   }
-  .add-label{
-    font-size:14px;
+  .add-label {
+    font-size: 14px;
   }
-  .custom-file-upload, .current-Image,.img-delete {
+  .custom-file-upload,
+  .current-Image,
+  .img-delete {
     width: 168px;
-    height:168px;
+    height: 168px;
   }
-  .img-delete-button{
-    left:134px;
+  .img-delete-button {
+    left: 134px;
   }
-  .register{
-    font-size:20px;
+  .register {
+    font-size: 20px;
   }
-  .add-img{
-    gap:8px;
+  .add-img {
+    gap: 8px;
   }
 }
 @media (min-width: 768px) and (max-width: 1199px) {
-  .wrapper{
-    width:768px;
+  .all-wrapper {
+    padding: 0 24px;
   }
-  .custom-file-upload, .current-Image, .img-delete{
-    width:162px;
-    height:162px;
+  .custom-file-upload,
+  .current-Image,
+  .img-delete {
+    width: 162px;
+    height: 162px;
   }
-  .img-delete-button{
-    left:130px;
+  .img-delete-button {
+    left: 130px;
   }
-  .add-img{
-    gap:16px;
+  .add-img {
+    gap: 16px;
   }
 }

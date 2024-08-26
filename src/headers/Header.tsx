@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../images/logo.svg";
 import logoMobile from "../images/logo_m.svg";
 import { Link, NavLink, useLocation } from "react-router-dom";
+import user from "../images/user.svg";
 import "./header.css";
 
 const Header = () => {
@@ -10,6 +11,13 @@ const Header = () => {
   };
 
   const location = useLocation();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    setIsLoggedIn(!!accessToken);
+  }, []);
 
   return (
     <header>
@@ -32,7 +40,6 @@ const Header = () => {
             />
           </Link>
         </button>
-
         <nav>
           <ul>
             <li>
@@ -61,11 +68,15 @@ const Header = () => {
         </nav>
       </div>
       <div>
-        <Link to="/login">
-          <button type="button" className="login-btn">
+        {isLoggedIn ? (
+          <Link to="/">
+            <img src={user} width="40" height="40" alt="프로필" />
+          </Link>
+        ) : (
+          <Link to="/login" className="login_button">
             로그인
-          </button>
-        </Link>
+          </Link>
+        )}
       </div>
     </header>
   );

@@ -8,6 +8,7 @@
 }
 .Info-wrapper {
   margin-left: 24px;
+  width: 100%;
 }
 .Info-wrapper-name {
   display: flex;
@@ -100,13 +101,13 @@
   border-radius: 8px;
   display: inline-block;
   margin-bottom: 24px;
-  font-size:16px;
+  font-size: 16px;
 }
 .middle-wrapper-button:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
 }
-.button-container{
+.button-container {
   display: flex;
   justify-content: flex-end;
 }

@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import useFormValidation from "./useFormValidation";
 import { postSignup } from "../api";
 
+type FieldName="email" | "nickname" | "password" | "passwordConfirmation";
+
 const Signup = () => {
   const navigate = useNavigate();
   const { errors, handleBlur } = useFormValidation();
@@ -89,7 +91,7 @@ const Signup = () => {
               value={formValues.email}
               onChange={handleInput}
               onBlur={(e) =>
-                handleBlur(e.target.name, e.target.value, formValues.password)
+                handleBlur(e.target.name as FieldName, e.target.value, formValues.password)
               }
             />
             <span className="error-message-on">{errors.email}</span>
@@ -107,7 +109,7 @@ const Signup = () => {
               value={formValues.nickname}
               onChange={handleInput}
               onBlur={(e) =>
-                handleBlur(e.target.name, e.target.value, formValues.password)
+                handleBlur(e.target.name as FieldName, e.target.value, formValues.password)
               }
             />
             <span className="error-message-on">{errors.nickname}</span>
@@ -125,7 +127,7 @@ const Signup = () => {
                 placeholder="비밀번호를 입력해주세요"
                 onChange={handleInput}
                 onBlur={(e) =>
-                  handleBlur(e.target.name, e.target.value, formValues.password)
+                  handleBlur(e.target.name as FieldName, e.target.value, formValues.password)
                 }
               />
               <button
@@ -152,7 +154,7 @@ const Signup = () => {
                 value={formValues.passwordConfirmation}
                 onChange={handleInput}
                 onBlur={(e) =>
-                  handleBlur(e.target.name, e.target.value, formValues.password)
+                  handleBlur(e.target.name as FieldName, e.target.value, formValues.password)
                 }
               />
               <button

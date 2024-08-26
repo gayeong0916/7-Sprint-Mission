@@ -9,34 +9,14 @@ import facebook from "../images/facebook.png";
 import twitter from "../images/twitter.png";
 import instagram from "../images/instagram.png";
 import youtube from "../images/youtube.png";
-import user from "../images/user.svg";
 import { Link } from "react-router-dom";
+import Header from "../headers/Header";
 
 const HomePage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!accessToken);
-  }, []);
 
   return (
     <div className="homepage-container">
-      <header>
-        <Link to="/">
-          <img className="logo" src={logo} alt="로고" width="153" height="51" />
-          <h1 className="logo-title">판다마켓</h1>
-        </Link>
-        {isLoggedIn ? (
-          <Link to="/">
-            <img src={user} width="40" height="40" alt="프로필" />
-          </Link>
-        ) : (
-          <Link to="/login" className="login_button">
-            로그인
-          </Link>
-        )}
-      </header>
+      <Header />
       <div className="banner">
         <div className="homepage-wrapper">
           <h2>

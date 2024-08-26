@@ -2,24 +2,33 @@ import arrowleft from "../images/arrow_left.svg";
 import arrowright from "../images/arrow_right.svg";
 import "./pagination.css";
 
-interface PaginationProps{
-  pageNumber:number;
-  currentPage:number;
-  onPageChange:(newPage:number)=>void;
+interface PaginationProps {
+  pageNumber: number;
+  currentPage: number;
+  onPageChange: (newPage: number) => void;
 }
 
-function getPageNumber(number:number) {
-  const numbers = [];
-  for (let i = 1; i <= number; i++) {
-    numbers.push(i);
+function getVisiblePageNumbers(currentPage: number, totalPages: number) {
+  const visiblePages = 3;
+  let startPage: number;
+
+  if (currentPage >= totalPages - visiblePages + 1) {
+    startPage = totalPages - visiblePages + 1;
+  } else {
+    startPage = currentPage - visiblePages + 1;
+    if (startPage < 1) {
+      startPage = 1;
+    }
   }
-  return numbers;
+
+  const endPage = Math.min(startPage + visiblePages - 1, totalPages);
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 }
 
-function Pagination({ pageNumber, currentPage, onPageChange}:PaginationProps) {
-  const PageNumberArray = getPageNumber(pageNumber);
+function Pagination({ pageNumber, currentPage, onPageChange }: PaginationProps) {
+  const PageNumberArray = getVisiblePageNumbers(currentPage, pageNumber);
 
-  const handlePageChange = (newPage:number) => {
+  const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= pageNumber) {
       onPageChange(newPage);
     }

@@ -1,22 +1,21 @@
 import React from "react";
 import morebutton from "../images/morebutton.svg";
 import comment_empty from "../images/comment_empty.svg";
+import user from "../images/user.svg";
 
-interface Writer{
-  image:string;
-  nickname:string;
+interface Comment {
+  content: string;
+  createdAt: string;
+  id: number;
+  updatedAt: string;
+  writer: {
+    id: number;
+    image: string;
+    nickname: string;
+  };
 }
-interface Comment{
-  id:string;
-  content:string;
-  writer:Writer;
-  updatedAt:string;
-}
-interface CommentList{
-  list:Comment[];
-}
-interface ProductCommentProps{
-  comment:CommentList;
+interface Props {
+  comment: Comment[];
 }
 
 function timeAgo(dateString:string):string {
@@ -38,12 +37,11 @@ function timeAgo(dateString:string):string {
   }
 }
 
-const ProductComment = ({ comment }:ProductCommentProps) => {
-
+const ProductComment = ({ comment }:Props) => {
   return (
     <div className="bottom-wrapper">
-      {comment.list.length > 0 ? (
-        comment.list.map((com) => (
+      {comment.length > 0 ? (
+        comment.map((com) => (
           <div key={com.id}>
             <div className="comment-content-button">
             <p className="comment-content">{com.content}</p>
@@ -56,7 +54,7 @@ const ProductComment = ({ comment }:ProductCommentProps) => {
             </div>
             <div className="comment-wrapper-img">
               <img
-                src={com.writer.image}
+                src={com.writer.image || user}
                 alt="사용자"
                 width="40"
                 height="40"

@@ -2,12 +2,18 @@
   color: #1f2937;
   font-family: Pretendard;
 }
+.defatil-info-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left: 24px;
+}
 .detailInfo {
   margin-top: 24px;
   display: flex;
 }
 .Info-wrapper {
-  margin-left: 24px;
   width: 100%;
 }
 .Info-wrapper-name {
@@ -49,7 +55,7 @@
   border-radius: 26px;
 }
 .favorite-count {
-  margin-top: 25px;
+  margin-left: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -170,12 +176,86 @@
   color: #9ca3af;
   margin-bottom: 24px;
 }
+.dropdown-button {
+  background-color: unset;
+  position: relative;
+}
+.dropdown-container {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 139px;
+  height: auto;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+.dropdown-item-edit {
+  padding: 16px 0px 12px 0px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.dropdown-item-delete {
+  padding: 12px 17px 16px 17px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.addItem-user-container {
+  display: flex;
+  align-items: center;
+  margin-top: 62px;
+}
+.addItem-user-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.addItem-user-name-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  row-gap: 2px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.addItem-user-name {
+  font-weight: 500;
+  color: #4b5563;
+}
+.addItem-user-date {
+  font-weight: 400;
+  color: #9ca3af;
+}
+.addItem-line {
+  height: auto;
+  border: 1px solid #e5e7eb;
+}
+.addItem-favorite-count {
+  display: flex;
+}
+.detail-info-wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-left:24px;
+}
+.img-detail{
+  object-fit: contain;
+}
+
 @media (min-width: 1200px) {
   .detail-wrapper {
     max-width: 1200px;
     margin: 0 auto;
   }
 }
+
 @media (min-width: 768px) and (max-width: 1199px) {
   .detail-wrapper {
     padding-left: 24px;
@@ -183,7 +263,7 @@
   }
   .img-detail {
     width: 340px;
-    height: 340px;
+    height: 100%;
   }
   .top-wrapper-line {
     width: 100%;
@@ -202,6 +282,10 @@
   .detailInfo {
     display: flex;
     flex-direction: column;
+  }
+  .detail-info-wrapper{
+    margin-left:0;
+    margin-top:16px;
   }
   .img-detail {
     width: 100%;

@@ -9,27 +9,33 @@ import ProductInquiry from "./ProductInquiry";
 import { Link } from "react-router-dom";
 import Header from "../headers/Header";
 
-interface DetailItem{
-  id:number;
-  name:string;
-  description:string;
-  price:number;
-  tags:string[];
-  images:string[];
-  ownerId:number;
-  favoriteCount:number;
-  createdAt:string;
-  updatedAt:string;
-  isFavorite:boolean;
+interface DetailItem {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  tags: string[];
+  images: string[];
+  ownerId: number;
+  favoriteCount: number;
+  createdAt: string;
+  updatedAt: string;
+  isFavorite: boolean;
 }
-interface Comment{
-  id:string;
-  content:string;
-  writer:{
-    image:string;
-    nickname:string;
-  }
-  updatedAt:string;
+interface Comment {
+  content: string;
+  createdAt: string;
+  id: number;
+  updatedAt: string;
+  writer: {
+    id: number;
+    image: string;
+    nickname: string;
+  };
+}
+interface Comments {
+  list: Comment[];
+  nextCursor: string | null;
 }
 function ProductDetail() {
   const { productId } = useParams();
@@ -46,45 +52,41 @@ function ProductDetail() {
     updatedAt: "",
     isFavorite: false,
   });
-  const [itemComment, setItemComment] = useState<Comment[]>([]);
-
-  const getProductDetail = async () => {
-    if(productId){
-    const data = await getProductId({ productId });
-    const comment = await getProductIdComments({ productId });
-    setDetailItem(data);
-    setItemComment(comment);
-    }
-  };
+  const [itemComment, setItemComment] = useState<Comments>({ list: [],nextCursor:null, });
 
   useEffect(() => {
+    const getProductDetail = async () => {
+      if (productId) {
+        const data = await getProductId({ productId });
+        const comment = await getProductIdComments({ productId });
+        setDetailItem(data);
+        setItemComment(comment);
+      }
+    };
     getProductDetail();
-  }, [productId]);
-
-  console.log(detailItem);
-  console.log(itemComment);
+  },[productId]);
 
   return (
     <>
-    <Header />
-    <div className="detail-wrapper">
-      <ProductDetailInfo detailItem={detailItem} />
-      <div className="line"></div>
-      <ProductInquiry />
-      <ProductComment comment={{list:itemComment}} />
-      <Link to="/items" className="comment-link">
-        <button className="list-button">
-          목록으로 돌아가기
-          <img
-            src={back}
-            alt="목록으로 돌아가기"
-            width="24"
-            height="24"
-            className="list-img"
-          />
-        </button>
-      </Link>
-    </div>
+      <Header />
+      <div className="detail-wrapper">
+        <ProductDetailInfo detailItem={detailItem} />
+        <div className="line"></div>
+        <ProductInquiry />
+        <ProductComment comment={itemComment.list} />
+        <Link to="/items" className="comment-link">
+          <button className="list-button">
+            목록으로 돌아가기
+            <img
+              src={back}
+              alt="목록으로 돌아가기"
+              width="24"
+              height="24"
+              className="list-img"
+            />
+          </button>
+        </Link>
+      </div>
     </>
   );
 }

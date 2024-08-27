@@ -1,11 +1,30 @@
 import "./AddItem.css";
 import plus from "../images/plus.svg";
 import deleteIcon from "../images/deleteIcon.svg";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { postImage } from "../api";
 
-function FileInputImage() {
+interface Props{
+  onImageUpload:(url:string)=>void;
+  initialImage:string;
+}
+
+function FileInputImage({onImageUpload,initialImage}:Props) {
   const [currentImage, setCurrentImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string| undefined>(undefined);
+  const [imageUrl, setImageUrl] = useState<string>(initialImage);
+
+  const mutation=useMutation({
+    mutationFn:postImage,
+    onSuccess: useCallback((url: string) => {
+      setImageUrl(url);
+      onImageUpload(url);
+    }, [onImageUpload]),
+    onError:(error)=>{
+      console.error("이미지 업로드 오류: ",error);
+    },
+  });
 
   useEffect(() => {
     if (!currentImage) return;
@@ -23,6 +42,7 @@ function FileInputImage() {
     const file = e.target.files?.[0];
     if (file) {
       setCurrentImage(file);
+      mutation.mutate(file);
     } else {
       setCurrentImage(null);
     }
@@ -30,6 +50,7 @@ function FileInputImage() {
 
   const handleFileDelete = () => {
     setCurrentImage(null);
+    onImageUpload("");
   };
 
   return (
@@ -45,7 +66,7 @@ function FileInputImage() {
           onChange={handleFileChange}
         />
       </label>
-      {currentImage && (
+      {imageUrl && (
         <div className="img-delete">
           <img className="current-Image" src={previewImage} alt="현재 이미지"/>
           <button className="img-delete-button "onClick={handleFileDelete}>

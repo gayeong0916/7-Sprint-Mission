@@ -9,9 +9,9 @@ import "./AddItem.css";
 import FileInputImage from "./FileInputImage";
 import deleteTag from "../images/deleteTag.svg";
 import Header from "../headers/Header";
-import { postAddItem } from "../api";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { getAddItem, patchAddItem } from "../api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -21,8 +21,7 @@ interface FormData {
   images: string;
 }
 
-function AddItem() {
-  const [isDisabled, setIsDisabled] = useState(true);
+function PatchAddItem() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     description: "",
@@ -32,17 +31,48 @@ function AddItem() {
   });
   const [productTagInput, setProductTagInput] = useState("");
   const navigate = useNavigate();
+  const { productId } = useParams();
 
   const mutation = useMutation({
-    mutationFn: postAddItem,
+    mutationFn: (data: FormData) => {
+      if (productId) {
+        return patchAddItem(data, Number(productId));
+      } else {
+        throw new Error("상품 ID가 필요합니다.");
+      }
+    },
     onSuccess: (data) => {
       const id = data.id;
       navigate(`/items/${id}`);
     },
     onError: (error) => {
-      console.error("상품 등록 실패: ", error);
+      console.error("상품 수정 실패: ", error);
     },
   });
+
+  const {
+    data: itemData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getAddItem(Number(productId)),
+    enabled: !!productId,
+  });
+
+  useEffect(() => {
+    if (itemData) {
+      setFormData({
+        name: itemData.name,
+        description: itemData.description,
+        price: itemData.price,
+        tags: itemData.tags,
+        images: Array.isArray(itemData.images)
+          ? itemData.images[0]
+          : itemData.images,
+      });
+    }
+  }, [itemData]);
 
   const handleInput = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -91,13 +121,6 @@ function AddItem() {
     }
   };
 
-  const handleRemoveTag = (indexToRemove: number) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      tags: prevFormData.tags.filter((_, index) => index !== indexToRemove),
-    }));
-  };
-
   const handleImageUpload = (url: string) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -105,30 +128,27 @@ function AddItem() {
     }));
   };
 
-  console.log(formData);
-
-  useEffect(() => {
-    const { name, description, price, tags } = formData;
-    if (name && description && price && tags) {
-      setIsDisabled(false);
-    } else {
-      setIsDisabled(true);
-    }
-  }, [formData]);
-
+  const handleRemoveTag = (indexToRemove: number) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      tags: prevFormData.tags.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>상품 정보를 불러오는 데 실패했습니다.</div>;
+  }
+console.log(formData.images);
   return (
     <>
       <Header />
       <div className="all-wrapper">
         <div className="wrapper">
           <div className="add-top">
-            <h2 className="register">상품 등록하기</h2>
-            <button
-              className={`add-button ${isDisabled ? "disabled" : ""}`}
-              type="submit"
-              disabled={isDisabled}
-              onClick={handleSubmit}
-            >
+            <h2 className="register">상품 수정하기</h2>
+            <button className="add-button" type="submit" onClick={handleSubmit}>
               등록
             </button>
           </div>
@@ -213,4 +233,4 @@ function AddItem() {
   );
 }
 
-export default AddItem;
+export default PatchAddItem;

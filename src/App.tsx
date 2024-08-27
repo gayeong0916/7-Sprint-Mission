@@ -6,6 +6,7 @@ import Header from "./headers/Header";
 import AddItem from "./AddItem/AddItem";
 import ProductDetail from "./ProductDetail/ProductDetail";
 import Items from "./Items";
+import PatchAddItem from "./AddItem/PatchAddItem";
 
 function App() {
   return (
@@ -15,9 +16,10 @@ function App() {
       <Route path="/signup" element={<Signup />} />
 
       <Route path="/header" element={<Header />} />
-        <Route path="items" element={<Items />} />
-        <Route path="addItem" element={<AddItem />} />
-        <Route path="items/:productId" element={<ProductDetail />} />
+      <Route path="items" element={<Items />} />
+      <Route path="addItem" element={<AddItem />} />
+      <Route path="edit/:productId" element={<PatchAddItem />} />
+      <Route path="items/:productId" element={<ProductDetail />} />
     </Routes>
   );
 }

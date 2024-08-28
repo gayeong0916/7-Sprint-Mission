@@ -42,9 +42,10 @@ const Login = () => {
     const isFormValid = Object.values(errors).every((error) => !error);
     if (isFormValid) {
         try{
-          const {accessToken}=await postSignIn(formValues);
+          const {accessToken,user}=await postSignIn(formValues);
           if(accessToken){
             localStorage.setItem("accessToken", accessToken); 
+            localStorage.setItem("userId",user.id);
           navigate("/"); 
           }
         }catch(error:any){

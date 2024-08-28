@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import detail_heart from "../images/detail-heart.svg";
 import morebutton from "../images/morebutton.svg";
 import user from "../images/user.svg";
-import { deleteAddItem, getUser} from "../api";
+import { deleteAddItem, getUser } from "../api";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 
@@ -43,7 +43,8 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
   const { productId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isUser, setIsUser] = useState<UserProps>();
-  const dropdownRef=useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -78,7 +79,10 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
@@ -107,28 +111,30 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
         <div className="Info-wrapper">
           <div className="Info-wrapper-name">
             <h1 className="detailItem-name">{detailItem.name}</h1>
-            <button
-              className="dropdown-button"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <img src={morebutton} alt="더보기" width="24" height="24" />
-              {isOpen && (
-                <div className="dropdown-container" ref={dropdownRef}>
-                  <button
-                    className="dropdown-item-edit"
-                    onClick={handlePatchClick}
-                  >
-                    수정하기
-                  </button>
-                  <button
-                    className="dropdown-item-delete"
-                    onClick={handleDeleteClick}
-                  >
-                    삭제하기
-                  </button>
-                </div>
-              )}
-            </button>
+            {Number(userId) === detailItem.ownerId && (
+              <button
+                className="dropdown-button"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <img src={morebutton} alt="더보기" width="24" height="24" />
+                {isOpen && (
+                  <div className="dropdown-container" ref={dropdownRef}>
+                    <button
+                      className="dropdown-item-edit"
+                      onClick={handlePatchClick}
+                    >
+                      수정하기
+                    </button>
+                    <button
+                      className="dropdown-item-delete"
+                      onClick={handleDeleteClick}
+                    >
+                      삭제하기
+                    </button>
+                  </div>
+                )}
+              </button>
+            )}
           </div>
 
           <h1 className="detailItem-price">{formatNumber(detailItem.price)}</h1>

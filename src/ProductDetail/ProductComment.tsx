@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import morebutton from "../images/morebutton.svg";
 import comment_empty from "../images/comment_empty.svg";
 import user from "../images/user.svg";
-import { useMutation} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { deleteComment, patchComment } from "../api";
 
 interface Comment {
@@ -19,7 +19,7 @@ interface Comment {
 interface Props {
   comment: Comment[];
   onDeleteSuccess: () => void;
-  onPatchSuccess:()=>void;
+  onPatchSuccess: () => void;
 }
 
 function timeAgo(dateString: string): string {
@@ -43,11 +43,16 @@ function timeAgo(dateString: string): string {
   }
 }
 
-const ProductComment = ({ comment, onDeleteSuccess ,onPatchSuccess}: Props) => {
+const ProductComment = ({
+  comment,
+  onDeleteSuccess,
+  onPatchSuccess,
+}: Props) => {
   const [isOpen, setIsOpen] = useState<number | null>(null);
   const [editCommentId, setEditCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userId = localStorage.getItem("userId");
 
   const deletemutation = useMutation({
     mutationFn: deleteComment,
@@ -148,39 +153,43 @@ const ProductComment = ({ comment, onDeleteSuccess ,onPatchSuccess}: Props) => {
               ) : (
                 <p className="comment-content">{com.content}</p>
               )}
-              <button
-                className={`dropdown-button ${
-                  editCommentId === com.id ? "hidden" : ""
-                }`}
-                onClick={() => setIsOpen(isOpen === com.id ? null : com.id)}
-              >
-                <img
-                  src={morebutton}
-                  alt="더보기 버튼"
-                  width="24"
-                  height="24"
-                />
-                {isOpen === com.id && (
-                  <div className="dropdown-container" ref={dropdownRef}>
-                    {!editCommentId && (
-                      <>
-                        <button
-                          className="dropdown-item-edit"
-                          onClick={() => handlePatchClick(com.id, com.content)}
-                        >
-                          수정하기
-                        </button>
-                        <button
-                          className="dropdown-item-delete"
-                          onClick={() => handleDeleteClick(com.id)}
-                        >
-                          삭제하기
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-              </button>
+              {Number(userId) === com.writer.id && (
+                <button
+                  className={`dropdown-button ${
+                    editCommentId === com.id ? "hidden" : ""
+                  }`}
+                  onClick={() => setIsOpen(isOpen === com.id ? null : com.id)}
+                >
+                  <img
+                    src={morebutton}
+                    alt="더보기 버튼"
+                    width="24"
+                    height="24"
+                  />
+                  {isOpen === com.id && (
+                    <div className="dropdown-container" ref={dropdownRef}>
+                      {!editCommentId && (
+                        <>
+                          <button
+                            className="dropdown-item-edit"
+                            onClick={() =>
+                              handlePatchClick(com.id, com.content)
+                            }
+                          >
+                            수정하기
+                          </button>
+                          <button
+                            className="dropdown-item-delete"
+                            onClick={() => handleDeleteClick(com.id)}
+                          >
+                            삭제하기
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </button>
+              )}
             </div>
             <div className="user-button-container">
               <div className="comment-wrapper-img">

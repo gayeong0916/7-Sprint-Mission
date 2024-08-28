@@ -177,7 +177,7 @@ export async function deleteAddItem(productId: number) {
 }
 
 //댓글 등록
-export async function postComment(productId: number) {
+export async function postComment(productId: number, content: string) {
   try {
     const response = await fetch(`${productURL}/${productId}/comments`, {
       method: "POST",
@@ -185,6 +185,7 @@ export async function postComment(productId: number) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({content}),
     });
     if (!response.ok) {
       throw new Error("댓글 등록에 실패했습니다");
@@ -217,7 +218,7 @@ export async function patchComment(commentId: number, content: string) {
 //댓글 삭제
 export async function deleteComment(commentId: number) {
   try {
-    const response = await fetch(`${baseURL}/${commentId}`, {
+    const response = await fetch(`${baseURL}/comments/${commentId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

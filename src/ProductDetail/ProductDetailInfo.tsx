@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import detail_heart from "../images/detail-heart.svg";
 import morebutton from "../images/morebutton.svg";
 import user from "../images/user.svg";
@@ -43,6 +43,7 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
   const { productId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [isUser, setIsUser] = useState<UserProps>();
+  const dropdownRef=useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -76,6 +77,23 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
     navigate(`/edit/${productId}`);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
     <div className="detailInfo">
       <img
@@ -95,7 +113,7 @@ const ProductDetailInfo = ({ detailItem }: DetailInfoProps) => {
             >
               <img src={morebutton} alt="더보기" width="24" height="24" />
               {isOpen && (
-                <div className="dropdown-container">
+                <div className="dropdown-container" ref={dropdownRef}>
                   <button
                     className="dropdown-item-edit"
                     onClick={handlePatchClick}

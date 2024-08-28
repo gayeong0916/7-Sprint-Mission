@@ -67,9 +67,7 @@ function PatchAddItem() {
         description: itemData.description,
         price: itemData.price,
         tags: itemData.tags,
-        images: Array.isArray(itemData.images)
-          ? itemData.images[0]
-          : itemData.images,
+        images: itemData.images[0],
       });
     }
   }, [itemData]);
@@ -128,6 +126,7 @@ function PatchAddItem() {
     }));
   };
 
+
   const handleRemoveTag = (indexToRemove: number) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -140,7 +139,8 @@ function PatchAddItem() {
   if (error) {
     return <div>상품 정보를 불러오는 데 실패했습니다.</div>;
   }
-console.log(formData.images);
+
+
   return (
     <>
       <Header />

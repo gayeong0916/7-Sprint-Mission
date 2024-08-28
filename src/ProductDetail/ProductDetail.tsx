@@ -52,7 +52,10 @@ function ProductDetail() {
     updatedAt: "",
     isFavorite: false,
   });
-  const [itemComment, setItemComment] = useState<Comments>({ list: [],nextCursor:null, });
+  const [itemComment, setItemComment] = useState<Comments>({
+    list: [],
+    nextCursor: null,
+  });
 
   useEffect(() => {
     const getProductDetail = async () => {
@@ -64,7 +67,13 @@ function ProductDetail() {
       }
     };
     getProductDetail();
-  },[productId]);
+  }, [productId]);
+
+  const handleCommentSuccess = () => {
+    if (productId) {
+      getProductIdComments({ productId }).then(setItemComment);
+    }
+  };
 
   return (
     <>
@@ -72,8 +81,11 @@ function ProductDetail() {
       <div className="detail-wrapper">
         <ProductDetailInfo detailItem={detailItem} />
         <div className="line"></div>
-        <ProductInquiry />
-        <ProductComment comment={itemComment.list} />
+        <ProductInquiry onSuccess={handleCommentSuccess} />
+        <ProductComment
+          comment={itemComment.list}
+          onDeleteSuccess={handleCommentSuccess}
+        />
         <Link to="/items" className="comment-link">
           <button className="list-button">
             목록으로 돌아가기

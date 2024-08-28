@@ -85,6 +85,7 @@ function ProductDetail() {
         <ProductComment
           comment={itemComment.list}
           onDeleteSuccess={handleCommentSuccess}
+          onPatchSuccess={handleCommentSuccess}
         />
         <Link to="/items" className="comment-link">
           <button className="list-button">

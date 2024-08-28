@@ -198,13 +198,13 @@ export async function postComment(productId: number, content: string) {
 //댓글 수정
 export async function patchComment(commentId: number, content: string) {
   try {
-    const response = await fetch(`${baseURL}/${commentId}`, {
+    const response = await fetch(`${baseURL}/comments/${commentId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(content),
+      body: JSON.stringify({content}),
     });
     if (!response.ok) {
       throw new Error("댓글 수정에 실패했습니다");

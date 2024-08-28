@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import morebutton from "../images/morebutton.svg";
 import comment_empty from "../images/comment_empty.svg";
 import user from "../images/user.svg";
-import { useMutation } from "@tanstack/react-query";
-import { deleteComment } from "../api";
+import { useMutation} from "@tanstack/react-query";
+import { deleteComment, patchComment } from "../api";
 
 interface Comment {
   content: string;
@@ -19,6 +19,7 @@ interface Comment {
 interface Props {
   comment: Comment[];
   onDeleteSuccess: () => void;
+  onPatchSuccess:()=>void;
 }
 
 function timeAgo(dateString: string): string {
@@ -42,8 +43,10 @@ function timeAgo(dateString: string): string {
   }
 }
 
-const ProductComment = ({ comment,onDeleteSuccess }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const ProductComment = ({ comment, onDeleteSuccess ,onPatchSuccess}: Props) => {
+  const [isOpen, setIsOpen] = useState<number | null>(null);
+  const [editCommentId, setEditCommentId] = useState<number | null>(null);
+  const [editedContent, setEditedContent] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const deletemutation = useMutation({
@@ -57,7 +60,49 @@ const ProductComment = ({ comment,onDeleteSuccess }: Props) => {
     },
   });
 
-  const handlePatchClick = () => {};
+  const updateMutation = useMutation({
+    mutationFn: ({
+      commentId,
+      content,
+    }: {
+      commentId: number;
+      content: string;
+    }) => patchComment(commentId, content),
+    onSuccess: () => {
+      console.log("댓글 수정 성공");
+      onPatchSuccess();
+    },
+    onError: (error) => {
+      console.log("댓글 수정 실패: ", error);
+    },
+  });
+
+  // 수정을 눌렀을 때
+  const handlePatchClick = (commentId: number, content: string) => {
+    setEditCommentId(commentId);
+    setEditedContent(content);
+    setIsOpen(null);
+  };
+
+  // 수정 완료를 눌렀을 때
+  const handleCompleteClick = () => {
+    if (editCommentId !== null && editedContent.trim() !== "") {
+      updateMutation.mutate({
+        commentId: editCommentId,
+        content: editedContent,
+      });
+      setEditCommentId(null);
+      setEditedContent("");
+    }
+  };
+
+  // 취소를 눌렀을 때
+  const handleCancelClick = () => {
+    setEditCommentId(null);
+    setEditedContent("");
+  };
+
+  // 삭제를 눌렀을 때
   const handleDeleteClick = (commentId: number) => {
     deletemutation.mutate(commentId);
   };
@@ -67,12 +112,12 @@ const ProductComment = ({ comment,onDeleteSuccess }: Props) => {
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-      setIsOpen(false);
+      setIsOpen(null);
     }
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen !== null) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -87,11 +132,27 @@ const ProductComment = ({ comment,onDeleteSuccess }: Props) => {
       {comment.length > 0 ? (
         comment.map((com) => (
           <div key={com.id}>
-            <div className="comment-content-button">
-              <p className="comment-content">{com.content}</p>
+            <div
+              className={`comment-content-button ${
+                editCommentId === com.id ? "comment-edit-mode" : ""
+              }`}
+            >
+              {editCommentId === com.id ? (
+                <div>
+                  <textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    className="edit-textarea"
+                  />
+                </div>
+              ) : (
+                <p className="comment-content">{com.content}</p>
+              )}
               <button
-                className="dropdown-button"
-                onClick={() => setIsOpen(!isOpen)}
+                className={`dropdown-button ${
+                  editCommentId === com.id ? "hidden" : ""
+                }`}
+                onClick={() => setIsOpen(isOpen === com.id ? null : com.id)}
               >
                 <img
                   src={morebutton}
@@ -99,35 +160,51 @@ const ProductComment = ({ comment,onDeleteSuccess }: Props) => {
                   width="24"
                   height="24"
                 />
-                {isOpen && (
+                {isOpen === com.id && (
                   <div className="dropdown-container" ref={dropdownRef}>
-                    <button
-                      className="dropdown-item-edit"
-                      onClick={handlePatchClick}
-                    >
-                      수정하기
-                    </button>
-                    <button
-                      className="dropdown-item-delete"
-                      onClick={() => handleDeleteClick(com.id)}
-                    >
-                      삭제하기
-                    </button>
+                    {!editCommentId && (
+                      <>
+                        <button
+                          className="dropdown-item-edit"
+                          onClick={() => handlePatchClick(com.id, com.content)}
+                        >
+                          수정하기
+                        </button>
+                        <button
+                          className="dropdown-item-delete"
+                          onClick={() => handleDeleteClick(com.id)}
+                        >
+                          삭제하기
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </button>
             </div>
-            <div className="comment-wrapper-img">
-              <img
-                src={com.writer.image || user}
-                alt="사용자"
-                width="40"
-                height="40"
-              />
-              <div className="comment-wrapper-user">
-                <span className="comment-user">{com.writer.nickname}</span>
-                <span className="comment-time">{timeAgo(com.updatedAt)}</span>
+            <div className="user-button-container">
+              <div className="comment-wrapper-img">
+                <img
+                  src={com.writer.image || user}
+                  alt="사용자"
+                  width="40"
+                  height="40"
+                />
+                <div className="comment-wrapper-user">
+                  <span className="comment-user">{com.writer.nickname}</span>
+                  <span className="comment-time">{timeAgo(com.updatedAt)}</span>
+                </div>
               </div>
+              {editCommentId === com.id && (
+                <div className="button-container">
+                  <button className="cancel-button" onClick={handleCancelClick}>
+                    취소
+                  </button>
+                  <button className="save-button" onClick={handleCompleteClick}>
+                    수정 완료
+                  </button>
+                </div>
+              )}
             </div>
             <div className="line"></div>
           </div>
